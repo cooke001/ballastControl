@@ -3,7 +3,7 @@ int down = 6;
 int a = 0;
 int b = 0;
 int c = 0;
-int del = 2;
+int del = 1;
 int error = 0;
 int PWMA = 3;
 int PWMB = 11;
@@ -27,7 +27,7 @@ void loop() {
   a = digitalRead(down);
   b = digitalRead(up);
   c = digitalRead(endStop);
-  if(dist > 150){
+  if(dist > 1500){
     error = 1;
     a = 0;
     b = 0;
