@@ -19,7 +19,7 @@ void setup() {
   pinMode(PWMA, OUTPUT);
   pinMode(DIRB, OUTPUT);
   pinMode(PWMB, OUTPUT);
-  
+  //Serial.begin(9600);
 }
 
 void loop() {
@@ -27,11 +27,11 @@ void loop() {
   a = digitalRead(down);
   b = digitalRead(up);
   c = digitalRead(endStop);
-  if(dist > 1500){
-    error = 1;
+  //Serial.println(dist);
+  if(dist > 1600){
+    //error = 1;
     a = 0;
-    b = 0;
-   
+    //b = 0;
   }
   if(dist < 0){
     error = 2;
