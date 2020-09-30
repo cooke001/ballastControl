@@ -25,7 +25,7 @@ void setup() {
   pinMode(DIRB, OUTPUT);
   pinMode(PWMB, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  cli();//stop interrupts
+  cli();//stop interrupts   http://www.8bit-era.cz/arduino-timer-interrupts-calculator.html
   TCCR1A = 0;// set entire TCCR1A register to 0
   TCCR1B = 0;// same for TCCR1B
   TCNT1  = 0;//initialize counter value to 0
