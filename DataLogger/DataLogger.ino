@@ -104,7 +104,7 @@ void handleRoot() {
 void readData() {
 
  String data = "{\"Temperature\":\""+ String(dist) +"\", \"Humidity\":\""+ String(depth) +"\"}";
- digitalWrite(LED,!digitalRead(LED)); //Toggle LED on data request ajax
+
  server.send(200, "text/plane", data); //Send ADC value, temperature and humidity JSON to client ajax request
  delay(500);
    int available = Wire.requestFrom(8,2);
@@ -162,6 +162,7 @@ while (!sensor.init()) {
 }
 
 void loop(void){
+   digitalWrite(LED,LOW); //Toggle LED on data request ajax
   server.handleClient();          //Handle client requests
 }
  
