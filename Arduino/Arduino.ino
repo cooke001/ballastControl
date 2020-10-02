@@ -28,8 +28,36 @@ void setup() {
   pinMode(PWMA, OUTPUT);
   pinMode(DIRB, OUTPUT);
   pinMode(PWMB, OUTPUT);
+<<<<<<< HEAD
   Serial.println("Pins Initialised");
   
+=======
+  pinMode(LED_BUILTIN, OUTPUT);
+  cli();//stop interrupts   http://www.8bit-era.cz/arduino-timer-interrupts-calculator.html
+  TCCR1A = 0;// set entire TCCR1A register to 0
+  TCCR1B = 0;// same for TCCR1B
+  TCNT1  = 0;//initialize counter value to 0
+  // set compare match register for 1hz increments
+  OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS12 and CS10 bits for 1024 prescaler
+  TCCR1B |= (1 << CS12) | (1 << CS10);  
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+  sei();//allow interrupts
+  Wire.begin();        // join i2c bus (address optional for master)
+//  while (!sensor.init()) {
+//    Serial.println("Init failed!");
+//    Serial.println("Are SDA/SCL connected correctly?");
+//    Serial.println("Blue Robotics Bar30: White=SDA, Green=SCL");
+//    Serial.println("\n\n\n");
+//    delay(5000);
+//  }
+  
+  //sensor.setModel(MS5837::MS5837_02BA);
+  //sensor.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
+>>>>>>> 5daeddc54c6a224f62e15cdd29d2f0fbfd13617c
 }
 
 void requestEvent() {
