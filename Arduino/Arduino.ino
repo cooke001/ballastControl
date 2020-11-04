@@ -40,7 +40,7 @@ void requestEvent() {
 void loop() {
   a = digitalRead(down);
   b = digitalRead(up);
-  c = digitalRead(endStop);
+  c = !digitalRead(endStop);
   
   if(dist == 1600){ //limit past 1600 movement or distance unknown
     a = 0;
@@ -66,7 +66,7 @@ void loop() {
   if(error == 1){ //endstop not pressed as case 3 error has not overwritten 
     while(c){
       in();
-      c = digitalRead(endStop);
+      c = !digitalRead(endStop);
     }
     error = 3;
   }
@@ -74,7 +74,7 @@ void loop() {
   if(error == 2){ //negative distance
     while(c){  //move in until endstop pressed
       in();
-      c = digitalRead(endStop);
+      c = !digitalRead(endStop);
     }
     error = 3; //endstop now pressed, hence error case 3 error
   }
@@ -82,7 +82,7 @@ void loop() {
   if(error == 3){ //met end stop 
     while(!c){    //move out until enstop depressed
       out();      
-      c = digitalRead(endStop);
+      c = !digitalRead(endStop);
     }
     dist = 0; //reset distance
     error = 0; //clear error
