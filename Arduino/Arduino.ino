@@ -1,25 +1,46 @@
-//#include <MS5837.h>
+#include "MS5837.h"
 #include <Wire.h>
-//MS5837 sensor;
+MS5837 sensor;
+int i=0;
 int up = 5;
 int down = 6;
 int a = 0;
 int b = 0;
 int c = 0;
-int d = 0;
+int d = 10;
 int del = 1;
+float depth = 0;
+float sdist = 0;
 int error = 1;
+float derror = 0;
 int PWMA = 3;
 int PWMB = 11;
 int DIRA = 12;
 int DIRB = 13;
 int endStop = 7;
 int dist = 0;
+int target = 34;
 
 void setup() {
-  Wire.begin(8);                // join i2c bus with address #8
-  Wire.onRequest(requestEvent); // register event
   Serial.begin(9600);
+  
+  Serial.println("Starting");
+  
+  Wire.begin();
+
+  // Initialize pressure sensor
+  // Returns true if initialization was successful
+  // We can't continue with the rest of the program unless we can initialize the sensor
+  while (!sensor.init()) {
+    Serial.println("Init failed!");
+    Serial.println("Are SDA/SCL connected correctly?");
+    Serial.println("Blue Robotics Bar30: White=SDA, Green=SCL");
+    Serial.println("\n\n\n");
+    delay(5000);
+  }
+  
+  sensor.setModel(MS5837::MS5837_30BA);
+  sensor.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
   
   pinMode(endStop, INPUT);
   pinMode(down, INPUT);
@@ -30,16 +51,34 @@ void setup() {
   pinMode(PWMB, OUTPUT);
 }
 
-void requestEvent() {
-  uint8_t buffer[2];
-  buffer[0] = dist >> 8;
-  buffer[1] = dist & 0xff;  
-  Wire.write(buffer, 2);
-}
-
 void loop() {
-  a = digitalRead(down);
-  b = digitalRead(up);
+  sensor.read();
+  depth = sensor.depth();
+  derror = 1-(depth + 0.4); // if derror negative, too deep. 
+  sdist = 2+float(dist - 800)/800;
+  Serial.print(-0.30);
+  Serial.print(",");
+  Serial.print(sdist);
+  Serial.print(",");
+  Serial.print(derror);
+  Serial.print(",");
+  Serial.println(0.30);
+  i = 0;
+  while(i<200){
+  if(abs(derror)<0.3){
+    a = 0;
+    b = 0;
+  }
+  else if(derror<0){
+    a = 0;
+    b = 1;
+  }
+  else{
+    b = 0;
+    a = 1;
+  }
+  //a = digitalRead(down); // replace this line with the up command
+  //b = digitalRead(up);   // replace this line with the down command
   c = !digitalRead(endStop);
   
   if(dist == 1600){ //limit past 1600 movement or distance unknown
@@ -92,12 +131,15 @@ void loop() {
     out();
     dist = dist + 1;  
   }
-  
-  if (b) {
+  else if (b) {
     in();
     dist = dist - 1;
   }
-  
+  else{
+    delay(4*del);
+    i++;
+  }
+  }
 }
 
 void out(void){
@@ -122,6 +164,7 @@ void out(void){
   
   digitalWrite(PWMA, LOW);
   digitalWrite(PWMB, LOW);
+  i++;
 }  
 
 void in(void){
@@ -146,4 +189,5 @@ void in(void){
  
   digitalWrite(PWMA, LOW);
   digitalWrite(PWMB, LOW);
+  i++;
 }
