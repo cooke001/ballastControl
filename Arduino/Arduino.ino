@@ -64,7 +64,7 @@ void loop() {
   Serial.print(",");
   Serial.println(0.30);
   i = 0;
-  while(i<200){
+  while(i<50){
   if(abs(derror)<0.3){
     a = 0;
     b = 0;
